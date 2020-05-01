@@ -100,15 +100,15 @@ function $ToolWindow($component){
 	
 	$w.applyBounds = () => {
 		$w.css({
-			left: Math.max(0, Math.min(innerWidth - $w.width(), $w[0].getBoundingClientRect().left)),
-			top: Math.max(0, Math.min(innerHeight - $w.height(), $w[0].getBoundingClientRect().top)),
+			left: ~~Math.max(0, Math.min(innerWidth - $w.width(), $w[0].getBoundingClientRect().left)),
+			top: ~~Math.max(0, Math.min(innerHeight - $w.height(), $w[0].getBoundingClientRect().top)),
 		});
 	};
 	
 	$w.center = () => {
 		$w.css({
-			left: (innerWidth - $w.width()) / 2,
-			top: (innerHeight - $w.height()) / 2,
+			left: ~~((innerWidth - $w.width()) / 2),
+			top: ~~((innerHeight - $w.height()) / 2),
 		});
 		$w.applyBounds();
 	};
@@ -119,8 +119,8 @@ function $ToolWindow($component){
 	let drag_offset_x, drag_offset_y;
 	const drag = e => {
 		$w.css({
-			left: e.clientX - drag_offset_x,
-			top: e.clientY - drag_offset_y,
+			left: ~~(e.clientX - drag_offset_x),
+			top: ~~(e.clientY - drag_offset_y),
 		});
 	};
 	$w.$titlebar.attr("touch-action", "none");
