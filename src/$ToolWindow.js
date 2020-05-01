@@ -211,9 +211,44 @@ function $FormToolWindow(title){
 		$b.on("pointerdown", () => {
 			$b[0].focus();
 		});
+
+		pixelAlignButtonText($b[0]);
 		
 		return $b;
 	};
 	
 	return $w;
+}
+
+var buttons = [...document.querySelectorAll("button")];
+
+function getTextNodeWidth(textNode) {
+    var width = 0;
+    if (document.createRange) {
+        var range = document.createRange();
+        range.selectNodeContents(textNode);
+        if (range.getBoundingClientRect) {
+            var rect = range.getBoundingClientRect();
+            if (rect) {
+                width = rect.right - rect.left;
+            }
+        }
+    }
+    return width;
+}
+
+function pixelAlignButtonText(button) {
+	// TODO: handle spans, multiple text nodes etc.
+	var textNode = button.childNodes[0];
+	if (!textNode || !(textNode instanceof Text)) {
+		return;
+	}
+	var computedStyle = getComputedStyle(button);
+	var textWidth = Math.ceil(getTextNodeWidth(textNode));
+	var buttonWidth = Math.ceil(button.scrollWidth);
+	var paddingLeft = parseInt(computedStyle.paddingLeft);
+	var paddingRight = parseInt(computedStyle.paddingRight);
+	if ((textWidth + buttonWidth + paddingLeft + paddingRight) % 2 === 1) {
+		button.style.paddingLeft = `calc(1px + ${paddingLeft}px)`;
+	}
 }
