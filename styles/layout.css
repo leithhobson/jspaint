@@ -730,5 +730,6 @@ html, body, .jspaint {
 * {
 	font-family: "Pixelated MS Sans Serif", Arial !important;
 	-webkit-font-smoothing: none !important;
+	font-smooth: never !important;
 	font-size: 11px !important;
 }
