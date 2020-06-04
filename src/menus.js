@@ -423,6 +423,40 @@ window.menus = {
 					},
 				},
 				{
+					item: "Zoom To &Window",
+					speech_recognition: [
+						"zoom to window", "zoom to view",
+						"zoom to fit",
+						"zoom to fit within window", "zoom to fit within view",
+						"zoom to fit within the window", "zoom to fit within the view",
+						"zoom to fit in window", "zoom to fit in view",
+						"zoom to fit in the window", "zoom to fit in the view",
+						"auto zoom", "fit zoom",
+						"zoom to max", "zoom to maximum", "zoom to max size", "zoom to maximum size",
+						"zoom so canvas fits", "zoom so picture fits", "zoom so image fits", "zoom so document fits",
+						"zoom so whole canvas is visible", "zoom so whole picture is visible", "zoom so whole image is visible", "zoom so whole document is visible",
+						"zoom so the whole canvas is visible", "zoom so the whole picture is visible", "zoom so the whole image is visible", "zoom so the whole document is visible",
+						
+						"fit to window", "fit to view", "fit in window", "fit in view", "fit within window", "fit within view",
+						"fit picture to window", "fit picture to view", "fit picture in window", "fit picture in view", "fit picture within window", "fit picture within view",
+						"fit image to window", "fit image to view", "fit image in window", "fit image in view", "fit image within window", "fit image within view",
+						"fit canvas to window", "fit canvas to view", "fit canvas in window", "fit canvas in view", "fit canvas within window", "fit canvas within view",
+						"fit document to window", "fit document to view", "fit document in window", "fit document in view", "fit document within window", "fit document within view",
+					],
+					description: "Zooms the picture to fit within the view.",
+					action: ()=> {
+						const rect = $canvas_area[0].getBoundingClientRect();
+						const margin = 30; // leave a margin so scrollbars won't appear
+						let mag = Math.min(
+							(rect.width - margin) / canvas.width,
+							(rect.height - margin) / canvas.height,
+						);
+						// round to an integer percent for the View > Zoom > Custom... dialog, which shows non-integers as invalid
+						mag = Math.floor(100 * mag) / 100;
+						set_magnification(mag);
+					},
+				},
+				{
 					item: "C&ustom...",
 					description: "Zooms the picture.",
 					speech_recognition: [
@@ -520,9 +554,10 @@ window.menus = {
 			speech_recognition: [
 				"attributes", "image attributes", "picture attributes", "image options", "picture options",
 				"dimensions", "image dimensions", "picture dimensions",
-				"resize canvas", "resize document", "resize page",
-				"set image size", "set picture size", "set cavnas size", "set document size", "set page size",
-				"configure image size", "configure picture size", "configure cavnas size", "configure document size", "configure page size",
+				"resize canvas", "resize document", "resize page", // not resize image/picture because that implies scaling, handled by Stretch/Skew
+				"set image size", "set picture size", "set canvas size", "set document size", "set page size",
+				"image size", "picture size", "canvas size", "document size", "page size",
+				"configure image size", "configure picture size", "configure canvas size", "configure document size", "configure page size",
 			],
 			action: ()=> { image_attributes(); },
 			description: "Changes the attributes of the picture.",
@@ -826,12 +861,37 @@ window.menus = {
 						"windows 98 theme", "switch to windows 98 theme", "use windows 98 theme", "set theme to windows 98", "set theme windows 98", "switch to windows 98 theme", "switch theme to windows 98", "switch theme windows 98",
 						"windows 95 theme", "switch to windows 95 theme", "use windows 95 theme", "set theme to windows 95", "set theme windows 95", "switch to windows 95 theme", "switch theme to windows 95", "switch theme windows 95",
 						"windows 2000 theme", "switch to windows 2000 theme", "use windows 2000 theme", "set theme to windows 2000", "set theme windows 2000", "switch to windows 2000 theme", "switch theme to windows 2000", "switch theme windows 2000",
+						// in contrast to the Dark theme:
+						"light theme", "switch to light theme", "use light theme", "set theme to light", "set theme light", "switch to light theme", "switch theme to light", "switch theme light",
+						"light mode", "switch to light mode", "use light mode", "set mode to light", "set mode light", "switch to light mode", "switch mode to light", "switch mode light",
+						"bright theme", "switch to bright theme", "use bright theme", "set theme to bright", "set theme bright", "switch to bright theme", "switch theme to bright", "switch theme bright",
+						"bright mode", "switch to bright mode", "use bright mode", "set mode to bright", "set mode bright", "switch to bright mode", "switch mode to bright", "switch mode bright",
+						"day theme", "switch to day theme", "use day theme", "set theme to day", "set theme day", "switch to day theme", "switch theme to day", "switch theme day",
+						"day mode", "switch to day mode", "use day mode", "set mode to day", "set mode day", "switch to day mode", "switch mode to day", "switch mode day",
+						"go light", "go bright",
 					],
 					action: ()=> {
 						set_theme("classic.css");
 					},
 					enabled: () => get_theme() != "classic.css",
 					description: "Makes JS Paint look like MS Paint from Windows 98.",
+				},
+				{
+					item: "&Dark",
+					speech_recognition: [
+						"dark theme", "switch to dark theme", "use dark theme", "set theme to dark", "set theme dark", "switch to dark theme", "switch theme to dark", "switch theme dark",
+						"dark mode", "switch to dark mode", "use dark mode", "set mode to dark", "set mode dark", "switch to dark mode", "switch mode to dark", "switch mode dark",
+						"dim theme", "switch to dim theme", "use dim theme", "set theme to dim", "set theme dim", "switch to dim theme", "switch theme to dim", "switch theme dim",
+						"dim mode", "switch to dim mode", "use dim mode", "set mode to dim", "set mode dim", "switch to dim mode", "switch mode to dim", "switch mode dim",
+						"night theme", "switch to night theme", "use night theme", "set theme to night", "set theme night", "switch to night theme", "switch theme to night", "switch theme night",
+						"night mode", "switch to night mode", "use night mode", "set mode to night", "set mode night", "switch to night mode", "switch mode to night", "switch mode night",
+						"go dark", "go dim",
+					],
+					action: ()=> {
+						set_theme("dark.css");
+					},
+					enabled: () => get_theme() != "dark.css",
+					description: "Makes JS Paint darker.",
 				},
 				{
 					item: "&Modern",
@@ -857,6 +917,55 @@ window.menus = {
 					},
 					enabled: () => get_theme() != "winter.css",
 					description: "Makes JS Paint look festive for the holidays.",
+				},
+				{
+					item: "&Occult",
+					speech_recognition: [
+						"occult theme", "switch to occult theme", "use occult theme", "set theme to occult", "set theme occult", "switch to occult theme", "switch theme to occult", "switch theme occult",
+						"occultist theme", "switch to occultist theme", "use occultist theme", "set theme to occultist", "set theme occultist", "switch to occultist theme", "switch theme to occultist", "switch theme occultist",
+						"occultism theme", "switch to occultism theme", "use occultism theme", "set theme to occultism", "set theme occultism", "switch to occultism theme", "switch theme to occultism", "switch theme occultism",
+						"satan theme", "switch to satan theme", "use satan theme", "set theme to satan", "set theme satan", "switch to satan theme", "switch theme to satan", "switch theme satan",
+						"satanic theme", "switch to satanic theme", "use satanic theme", "set theme to satanic", "set theme satanic", "switch to satanic theme", "switch theme to satanic", "switch theme satanic",
+						"satanist theme", "switch to satanist theme", "use satanist theme", "set theme to satanist", "set theme satanist", "switch to satanist theme", "switch theme to satanist", "switch theme satanist",
+						"satanism theme", "switch to satanism theme", "use satanism theme", "set theme to satanism", "set theme satanism", "switch to satanism theme", "switch theme to satanism", "switch theme satanism",
+						"demon theme", "switch to demon theme", "use demon theme", "set theme to demon", "set theme demon", "switch to demon theme", "switch theme to demon", "switch theme demon",
+						"demonic theme", "switch to demonic theme", "use demonic theme", "set theme to demonic", "set theme demonic", "switch to demonic theme", "switch theme to demonic", "switch theme demonic",
+						"daemon theme", "switch to daemon theme", "use daemon theme", "set theme to daemon", "set theme daemon", "switch to daemon theme", "switch theme to daemon", "switch theme daemon",
+						"daemonic theme", "switch to daemonic theme", "use daemonic theme", "set theme to daemonic", "set theme daemonic", "switch to daemonic theme", "switch theme to daemonic", "switch theme daemonic",
+						"devil theme", "switch to devil theme", "use devil theme", "set theme to devil", "set theme devil", "switch to devil theme", "switch theme to devil", "switch theme devil",
+						"devilish theme", "switch to devilish theme", "use devilish theme", "set theme to devilish", "set theme devilish", "switch to devilish theme", "switch theme to devilish", "switch theme devilish",
+						"devil worship theme", "switch to devil worship theme", "use devil worship theme", "set theme to devil worship", "set theme devil worship", "switch to devil worship theme", "switch theme to devil worship", "switch theme devil worship",
+						"witchcraft theme", "switch to witchcraft theme", "use witchcraft theme", "set theme to witchcraft", "set theme witchcraft", "switch to witchcraft theme", "switch theme to witchcraft", "switch theme witchcraft",
+						"witch theme", "switch to witch theme", "use witch theme", "set theme to witch", "set theme witch", "switch to witch theme", "switch theme to witch", "switch theme witch",
+						"witchy theme", "switch to witchy theme", "use witchy theme", "set theme to witchy", "set theme witchy", "switch to witchy theme", "switch theme to witchy", "switch theme witchy",
+						"witchery theme", "switch to witchery theme", "use witchery theme", "set theme to witchery", "set theme witchery", "switch to witchery theme", "switch theme to witchery", "switch theme witchery",
+						"ritual theme", "switch to ritual theme", "use ritual theme", "set theme to ritual", "set theme ritual", "switch to ritual theme", "switch theme to ritual", "switch theme ritual",
+						"ritualism theme", "switch to ritualism theme", "use ritualism theme", "set theme to ritualism", "set theme ritualism", "switch to ritualism theme", "switch theme to ritualism", "switch theme ritualism",
+						"ritualistic theme", "switch to ritualistic theme", "use ritualistic theme", "set theme to ritualistic", "set theme ritualistic", "switch to ritualistic theme", "switch theme to ritualistic", "switch theme ritualistic",
+
+						"summon demon", "summon daemon", "summon demon theme", "summon daemon theme",
+						"summon demons", "summon daemons", "summon demons theme", "summon daemons theme",
+						"demon summoning", "daemon summoning", "demon summoning theme", "daemon summoning theme",
+						"demons summoning", "daemons summoning", "demons summoning theme", "daemons summoning theme",
+						"welcome demon", "welcome daemon", "welcome demon theme", "welcome daemon theme",
+						"welcome demons", "welcome daemons", "welcome demons theme", "welcome daemons theme",
+						"summon satan", "summon satan theme", "summon daemon theme",
+						"satan summoning", "satan summoning theme", "daemon summoning theme",
+						"welcome satan", "welcome satan theme",
+						"summon devil", "summon the devil", "summon devil theme", "summon the devil theme",
+						"welcome devil", "welcome the devil", "welcome devil theme", "welcome the devil theme",
+
+						"I beseach thee", "I entreat thee", "I summon thee", "I call upon thy name", "I call upon thine name", "Lord Satan", "hail Satan", "hail Lord Satan", "O Mighty Satan", "Oh Mighty Satan",
+						"In nomine Dei nostri Satanas Luciferi Excelsi", "Rege Satanas", "Ave Satanas",
+						"go demonic", "go daemonic", "go occult", "666",
+						"begin ritual", "begin the ritual", "begin a ritual",
+						"start ritual", "start the ritual", "start a ritual",
+					],
+					action: ()=> {
+						set_theme("occult.css");
+					},
+					enabled: () => get_theme() != "occult.css",
+					description: "Starts the ritual.",
 				},
 			]
 		},

@@ -3,12 +3,24 @@
 context('visual tests', () => {
 
 	const withTextCompareOptions = {
-		failureThreshold: 0.05, // (1% is much too high)
-		failureThresholdType: 'percent'
+		failureThreshold: 0.05,
+		failureThresholdType: 'percent' // not actually percent - fraction
 	};
-	const noTextCompareOptions = {
-		failureThreshold: 0,
-		failureThresholdType: 'percent'
+	const withMuchTextCompareOptions = {
+		failureThreshold: 0.08,
+		failureThresholdType: 'percent' // not actually percent - fraction
+	};
+	const toolboxCompareOptions = {
+		failureThreshold: 40,
+		failureThresholdType: 'pixel'
+	};
+
+	const selectTheme = (themeName) => {
+		cy.contains(".menu-button", "Extras").click();
+		cy.contains(".menu-item", "Theme").click();
+		cy.contains(".menu-item", themeName).click();
+		cy.get(".status-text").click(); // close menu (@TODO: menus should probably always be closed when you select a menu item)
+		cy.wait(1000); // give a bit of time for theme to load
 	};
 
 	it('main screenshot', () => {
@@ -20,31 +32,31 @@ context('visual tests', () => {
 
 	it('brush selected', () => {
 		cy.get('.tool[title="Brush"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('select selected', () => {
 		cy.get('.tool[title="Select"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('magnifier selected', () => {
 		cy.get('.tool[title="Magnifier"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('airbrush selected', () => {
 		cy.get('.tool[title="Airbrush"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('eraser selected', () => {
 		cy.get('.tool[title="Eraser/Color Eraser"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('line selected', () => {
 		cy.get('.tool[title="Line"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('rectangle selected', () => {
 		cy.get('.tool[title="Rectangle"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 
 	beforeEach(()=> {
@@ -56,14 +68,14 @@ context('visual tests', () => {
 
 	it('image attributes window', () => {
 		cy.get('body').type('{ctrl}e');
-		cy.get('.window:visible').matchImageSnapshot(withTextCompareOptions);
+		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
 	it('flip and rotate window', () => {
 		// @TODO: make menus more testable, with IDs
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-popup > table > tr:nth-child(1)').click();
-		cy.get('.window:visible').matchImageSnapshot(withTextCompareOptions);
+		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
 	it('stretch and skew window', () => {
@@ -87,6 +99,66 @@ context('visual tests', () => {
 		// @TODO: make menus more testable, with IDs
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-popup > table > tr:nth-child(3)').click();
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["img", "#maybe-outdated-line"] }));
+		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["img", "#maybe-outdated-line"] }));
 	});
+
+	it('eye gaze mode', () => {
+		cy.get('.tool[title="Select"]').click();
+		cy.contains(".menu-button", "Extras").click();
+		cy.contains(".menu-item", "Eye Gaze Mode").click();
+		cy.wait(100);
+		// cy.contains(".menu-button", "View").click();
+		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
+		cy.get(".status-text").click();
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('modern theme eye gaze mode', () => {
+		selectTheme("Modern");
+		// cy.contains(".menu-button", "View").click();
+		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('modern theme', () => {
+		cy.contains(".menu-button", "Extras").click();
+		cy.contains(".menu-item", "Eye Gaze Mode").click();
+		cy.wait(100);
+		// cy.contains(".menu-button", "View").click();
+		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
+		cy.get(".status-text").click();
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('winter theme', () => {
+		selectTheme("Winter");
+		// cy.contains(".menu-button", "View").click();
+		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('winter theme vertical color box', () => {
+		cy.wait(500);
+		cy.contains(".menu-button", "Extras").click();
+		cy.contains(".menu-item", "Vertical Color Box").click();
+		cy.wait(500);
+		cy.get(".status-text").click();
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('classic theme vertical color box', () => {
+		selectTheme("Classic");
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('modern theme vertical color box', () => {
+		selectTheme("Modern");
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
 });

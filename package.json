@@ -65,7 +65,7 @@
     "@electron-forge/maker-zip": "6.0.0-beta.45",
     "concat-glob-cli": "^0.1.0",
     "cross-spawn": "^7.0.0",
-    "cypress": "3.6.0",
+    "cypress": "4.7.0",
     "cypress-image-snapshot": "3.1.1",
     "devtron": "^1.4.0",
     "electron": "6.0.10",
@@ -89,7 +89,7 @@
     "test:start-server": "live-server --port=11822 --no-browser --ignorePattern=\"(node_modules|cypress|out)[/\\\\\\\\]|package\\.json|cypress\\.json\"",
     "test:start-server:NOTE": "@XXX: the octuple backlash ends up meaning a single backslash on Linux, two backslashes on Windows. In this case it's fine because it's in a regexp character class so the extra is redundant and doesn't cause an error.",
     "cy:open": "cypress open",
-    "cy:run": "cypress run",
+    "cy:run": "cypress run --record",
     "cy:accept": "cypress run --env updateSnapshots=true",
     "test": "start-server-and-test test:start-server http://localhost:11822 cy:run",
     "accept": "start-server-and-test test:start-server http://localhost:11822 cy:accept"

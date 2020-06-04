@@ -26,12 +26,20 @@ let palette = default_palette;
 let polychrome_palette = palette;
 let monochrome_palette = make_monochrome_palette();
 
-let brush_shape = "circle";
-let brush_size = 4;
-let eraser_size = 8;
-let airbrush_size = 9;
-let pencil_size = 1;
-let stroke_size = 1; // lines, curves, shape outlines
+// declared like this for Cypress tests
+window.default_brush_shape = "circle";
+window.default_brush_size = 4;
+window.default_eraser_size = 8;
+window.default_airbrush_size = 9;
+window.default_pencil_size = 1;
+window.default_stroke_size = 1; // applies to lines, curves, shape outlines
+// declared like this for Cypress tests
+window.brush_shape = default_brush_shape;
+window.brush_size = default_brush_size
+window.eraser_size = default_eraser_size;
+window.airbrush_size = default_airbrush_size;
+window.pencil_size = default_pencil_size;
+window.stroke_size = default_stroke_size; // applies to lines, curves, shape outlines
 let tool_transparent_mode = false;
 
 let stroke_color;
@@ -42,7 +50,7 @@ let fill_color_k = "background"; // enum of "foreground", "background", "ternary
 let selected_tool = default_tool;
 let selected_tools = [selected_tool];
 let return_to_tools = [selected_tool];
-let colors = {
+window.colors = { // declared like this for Cypress tests
 	foreground: "",
 	background: "",
 	ternary: "",
@@ -76,8 +84,12 @@ let file_name;
 let document_file_path;
 let saved = true;
 
-/** canvas coords */
-let pointer, pointer_start, pointer_previous;
+/** works in canvas coordinates */
+let pointer;
+/** works in canvas coordinates */
+let pointer_start;
+/** works in canvas coordinates */
+let pointer_previous;
 
 let pointer_active = false;
 let pointer_type, pointer_buttons;
@@ -87,7 +99,7 @@ let button;
 let pointer_over_canvas = false;
 let update_helper_layer_on_pointermove_active = false;
 
-/** client coords */
+/** works in client coordinates */
 let pointers = [];
 
 const update_from_url_params = ()=> {
